@@ -28,6 +28,29 @@ for ( const file of commandFiles ){
     }
 }
 
+
+// we are gonna try this, to get all the images from the images folder
+let images = [];
+const imagesPath = path.join(__dirname, 'images');
+fs.readdir(imagesPath, (err, files) => {
+    if( err ) {
+        console.error("Error reading folder: ", err );
+        return;
+    }
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp'];
+    files.forEach( (file) => {
+        const fileExtension = path.extname(file).toLowerCase();
+        if( imageExtensions.includes(fileExtension)){
+            const imageURL = path.join('images',file );
+            console.log("The image is pushed: ", imageURL );
+            // console.log("Pushing image");
+            images.push(imageURL);
+        }
+    });
+
+});
+
+
 // When the client is ready, run this code (only once)
 // We use 'c' for the event parameter to keep it separate from the already defined 'client'
 client.once(Events.ClientReady, c => {
@@ -63,8 +86,16 @@ client.on(Events.InteractionCreate, async interaction => {
 client.on(`messageCreate`, msg => {
     if( msg.author.bot ) return;
    
+    if( msg.content === "!meme" ){
+        if( images.length == 0 ){ return null; }
+        const randomIndex = Math.floor( Math.random() * images.length );
+        msg.channel.send({
+            files: [ images[randomIndex ] ]
+        });
+    }
 
-    msg.channel.send({ files: ["./images/" + "changethefates.jpeg"] });
+
+    // msg.channel.send({ files: ["./images/" + "changethefates.jpeg"] });
 
     // if( msg.content == "!clio") {
     //     msg.reply("Clio says...");
