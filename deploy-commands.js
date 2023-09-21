@@ -5,17 +5,40 @@ const path = require('node:path');
 
 const commands = [];
 
-// lets try this instead
+/*const commandsPath = path.join(__dirname, "commands");
+fs.readdir(commandsPath, (err, files) => {
+    if( err ){
+        console.error(error);
+        return;
+    }
+    files.forEach( (file) => {
+        const commandURL = path.join('commands', file );
+        // console.log("Command URL: ", commandURL );
+        const command = require("./" + commandURL);
+        if( 'data' in command && 'execute' in command ){
+            commands.push(command.data.toJSON());
+            console.log("Hey we got here!");
+            console.log(commands.length);
+        } else {
+            console.error("Your slash command is missing some stuff");
+        }
+    })
+})*/
+
+
+
 const ping = require('./commands/ping');
-if( 'data' in ping && 'execute' in ping ){
-    commands.push(ping.data.toJSON());
-} else {
-    console.error("Your slash command is missing some stuff");
-}
+const game = require('./commands/game')
+commands.push(ping.data.toJSON());
+commands.push(game.data.toJSON());
+
+
+
 
 const rest = new REST().setToken(process.env.CLIENT_TOKEN);
 
 ( async () => {
+    console.log("Commands: " , commands.length);
     try {
         console.log(`Started refreshing ${commands.length} application (/) commands`);
         const data = await rest.put(

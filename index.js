@@ -42,7 +42,7 @@ fs.readdir(imagesPath, (err, files) => {
         const fileExtension = path.extname(file).toLowerCase();
         if( imageExtensions.includes(fileExtension)){
             const imageURL = path.join('images',file );
-            console.log("The image is pushed: ", imageURL );
+            // console.log("The image is pushed: ", imageURL );
             // console.log("Pushing image");
             images.push(imageURL);
         }
@@ -85,6 +85,11 @@ client.on(Events.InteractionCreate, async interaction => {
 
 client.on(`messageCreate`, msg => {
     if( msg.author.bot ) return;
+
+    let args = msg.content.substring(1).split(' ');
+    let cmd = args[0];
+    args = args.splice(1);
+
    
     if( msg.content === "!meme" ){
         if( images.length == 0 ){ return null; }
@@ -92,6 +97,12 @@ client.on(`messageCreate`, msg => {
         msg.channel.send({
             files: [ images[randomIndex ] ]
         });
+    }
+
+    if( msg.content === "!game" ){
+        const url = "https://chilebean15.foundryserver.com/join";
+        const emote = args;
+        msg.channel.send("Game time! ")
     }
 
 
